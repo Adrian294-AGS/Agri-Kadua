@@ -7,18 +7,23 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['employee_code', 'full_name', 'job_title', 'email', 'phone', 'password', 'role_id', 'branch_id', 'is_active', 'last_login_at'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable(['employee_code', 'full_name', 'job_title', 'email', 'phone', 'password_hash', 'role_id', 'branch_id', 'is_active', 'last_login_at'])]
+#[Hidden(['password_hash', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     protected $primaryKey = 'user_id';
+
+    public function getAuthPasswordName(): string
+    {
+        return 'password_hash';
+    }
 
     public function role(): BelongsTo
     {
@@ -45,7 +50,7 @@ class User extends Authenticatable
         return [
             'last_login_at' => 'datetime',
             'is_active' => 'boolean',
-            'password' => 'hashed',
+            'password_hash' => 'hashed',
         ];
     }
 }

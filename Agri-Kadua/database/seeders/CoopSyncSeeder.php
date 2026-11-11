@@ -68,7 +68,7 @@ class CoopSyncSeeder extends Seeder
             'employee_code' => $code,
             'full_name' => $name,
             'job_title' => $title,
-            'password' => 'coopsync123',
+            'password_hash' => 'coopsync123',
             'role_id' => $roles[$roleCode]->role_id,
             'branch_id' => $branch->branch_id,
         ]);
@@ -233,7 +233,7 @@ class CoopSyncSeeder extends Seeder
                 'status' => $status,
                 'verification_status' => 'verified',
                 'received_by' => $jose->user_id,
-                'completed_at' => $date . ' 10:00:00',
+                'completed_at' => $date.' 10:00:00',
             ]);
         };
 

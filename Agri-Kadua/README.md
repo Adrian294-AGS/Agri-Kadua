@@ -7,6 +7,29 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Co-opSync Backend Setup
+
+The application uses MySQL for normal development and deployment. Install PHP 8.3+ with the `pdo_mysql` and `bcmath` extensions, Composer, and MySQL 8.0.16 or later.
+
+1. Copy `.env.example` to `.env` and set `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` for your MySQL server.
+2. Create the database configured in `.env`, for example:
+
+   ```sql
+   CREATE DATABASE agricoop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+
+3. Generate the application key, migrate the schema, and load demo data:
+
+   ```powershell
+   php artisan key:generate
+   php artisan migrate
+   php artisan db:seed --class=CoopSyncSeeder
+   ```
+
+The demo accounts use the password `coopsync123`; replace these accounts and passwords before deploying. Authentication stores and verifies password hashes in the MySQL `users.password_hash` column.
+
+Run the test suite with `php artisan test`. Tests use the SQLite connection and require the `pdo_sqlite` extension.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

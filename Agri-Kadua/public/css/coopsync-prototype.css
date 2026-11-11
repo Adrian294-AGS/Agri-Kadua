@@ -1,0 +1,44 @@
+:root{--g:#14532d;--gl:#dcfce7;--bg:#f4f6f4;--b:#cfd5cf;--t:#1b261b;--m:#5d685d;--er:#991b1b;--wa:#92400e}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.4 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--t);background:var(--bg)}
+[hidden]{display:none!important}
+button,select,input{font:inherit}
+h2{font-size:22px;margin:0 0 14px}h3{margin:18px 0 10px}.sub{color:var(--m)}small{color:var(--m);display:block}
+label{display:block;font-weight:700;margin:14px 0 6px}
+select,input{width:100%;min-height:48px;padding:8px 12px;border:2px solid var(--b);border-radius:12px;background:#fff}
+.btn{display:block;width:100%;min-height:52px;margin-top:14px;border:0;border-radius:12px;background:var(--g);color:#fff;font-weight:700;cursor:pointer}
+.btn.o{background:#fff;color:var(--g);border:2px solid var(--g)}
+.btn.sm{display:inline-block;width:auto;min-height:38px;margin:0 0 0 6px;padding:4px 12px}
+.link{background:none;border:0;color:var(--m);cursor:pointer;text-decoration:underline}
+.card{background:#fff;border:2px solid var(--b);border-radius:14px;padding:14px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.amt{font-size:20px;font-weight:800;color:var(--g)}
+.tag{padding:2px 10px;border-radius:99px;font-size:13px;font-weight:700;background:var(--gl);color:var(--g)}
+.tag.wa{background:#fef3c7;color:var(--wa)}.tag.er{background:#fee2e2;color:var(--er)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:#fff;border:2px solid var(--b);border-radius:14px;padding:14px}
+.tile b{display:block;font-size:24px;color:var(--g)}
+.net{background:var(--gl);border-radius:12px;padding:14px;margin-top:18px;text-align:center}
+.net b{display:block;font-size:30px;color:var(--g)}
+.msg{padding:10px;border-radius:10px;font-weight:600;background:var(--gl)}.msg.er{background:#fee2e2;color:var(--er)}
+.bar{height:10px;background:#e6eae6;border-radius:99px;margin-top:8px}.bar i{display:block;height:100%;background:var(--g);border-radius:99px}
+.banner{background:#fef3c7;color:var(--wa);padding:10px 24px;font-weight:600}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--t);color:#fff;padding:12px 20px;border-radius:99px;z-index:50}
+.go{display:flex;gap:12px;align-items:center;width:100%;min-height:64px;padding:10px 14px;margin-bottom:10px;border:2px solid var(--g);background:var(--gl);border-radius:14px;text-align:left;font-weight:700;cursor:pointer}
+#login{min-height:100vh;display:grid;place-items:center;padding:16px}
+.login{width:100%;max-width:440px}.roles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.roles button{min-height:76px;border:2px solid var(--b);background:#fff;border-radius:14px;font-weight:600;cursor:pointer}
+.roles button.on{background:var(--gl);border-color:var(--g)}.roles span{display:block;font-size:26px}
+.side{position:fixed;inset:0 auto 0 0;width:240px;background:#fff;border-right:1px solid var(--b);padding:14px;overflow-y:auto}
+.brand{display:block;margin-bottom:14px;color:var(--g)}.brand small{display:block}
+.usercard{display:flex;gap:10px;align-items:center;background:var(--gl);border-radius:12px;padding:10px;margin-bottom:14px}
+.usercard span{font-size:26px}
+#nav button{display:flex;justify-content:space-between;width:100%;padding:12px;margin-bottom:4px;border:0;border-radius:10px;background:none;font-weight:600;cursor:pointer;text-align:left}
+#nav button.on{background:var(--gl);color:var(--g)}
+.main{margin-left:240px;min-height:100vh;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;background:#fff;border-bottom:1px solid var(--b);padding:12px 24px;font-weight:700}
+#pg{flex:1;width:100%;max-width:720px;margin:0 auto;padding:20px}
+.foot{display:flex;justify-content:space-between;padding:14px 24px;font-size:12px;color:var(--m);border-top:1px solid var(--b)}
+@media(max-width:800px){.side{position:static;width:auto;padding:8px}.brand,.usercard{display:none}
+#nav{display:flex;gap:6px;overflow-x:auto}#nav button{width:auto;white-space:nowrap}.main{margin:0}}
+@media print{.side,.top,.foot,.btn{display:none!important}.main{margin:0}}

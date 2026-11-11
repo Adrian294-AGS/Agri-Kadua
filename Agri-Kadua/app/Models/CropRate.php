@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CropRate extends Model
 {
@@ -19,5 +20,10 @@ class CropRate extends Model
             'effective_from' => 'date',
             'effective_to' => 'date',
         ];
+    }
+
+    public function variety(): BelongsTo
+    {
+        return $this->belongsTo(CropVariety::class, 'variety_id', 'variety_id');
     }
 }

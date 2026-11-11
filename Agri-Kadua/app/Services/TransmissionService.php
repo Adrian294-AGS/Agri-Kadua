@@ -19,7 +19,7 @@ class TransmissionService
         ?int $terminalId = null,
         float $sizeKb = 1.0,
     ): SyncRecord {
-        $last = SyncRecord::orderByDesc('sync_id')->value('record_code');
+        $last = SyncRecord::orderByDesc('sync_id')->lockForUpdate()->value('record_code');
         $next = $last ? ((int) substr($last, 3)) + 1 : 9921;
 
         return SyncRecord::create([

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\AuditLog;
 use App\Models\CropVariety;
 use App\Models\DeliveryReceipt;
+use App\Models\FarmerMember;
 use App\Models\ScheduledDelivery;
 use App\Models\StockItem;
 use App\Models\StockMovement;
@@ -15,9 +16,7 @@ use InvalidArgumentException;
 
 class ReceivingService
 {
-    public function __construct(private TransmissionService $transmission)
-    {
-    }
+    public function __construct(private TransmissionService $transmission) {}
 
     /**
      * Quality deduction rule (ASSUMPTION - confirm with the cooperative):
@@ -62,12 +61,38 @@ class ReceivingService
      * Records a harvest delivery (FR-02, FR-03). The whole save runs in one
      * transaction so an incomplete record is never stored (NFR-06).
      *
-     * @param array{member_id:int, variety_id:int, delivery_date:string, gross_weight_kg:float|int|string, moisture_pct?:float|int|string, impurities_pct?:float|int|string, deduction_pct?:float|int|string|null, rejected_kg?:float|int|string, schedule_id?:int|null, notes?:string|null} $data
+     * @param  array{member_id:int, variety_id:int, delivery_date:string, gross_weight_kg:float|int|string, moisture_pct?:float|int|string, impurities_pct?:float|int|string, deduction_pct?:float|int|string|null, rejected_kg?:float|int|string, schedule_id?:int|null, notes?:string|null}  $data
      */
     public function record(array $data, User $user, ?int $terminalId = null): DeliveryReceipt
     {
         return DB::transaction(function () use ($data, $user, $terminalId) {
             $variety = CropVariety::findOrFail($data['variety_id']);
+
+            if (! $variety->is_active) {
+                throw new InvalidArgumentException('This crop variety is no longer active.');
+            }
+
+            $member = FarmerMember::whereKey($data['member_id'])->lockForUpdate()->firstOrFail();
+
+            if ($member->status !== 'active') {
+                throw new InvalidArgumentException('Deliveries can only be recorded for active members.');
+            }
+
+            if ((int) $member->branch_id !== (int) $user->branch_id) {
+                throw new InvalidArgumentException('This member belongs to a different branch.');
+            }
+
+            if (! empty($data['schedule_id'])) {
+                $schedule = ScheduledDelivery::whereKey($data['schedule_id'])->lockForUpdate()->firstOrFail();
+
+                if ((int) $schedule->member_id !== (int) $member->member_id) {
+                    throw new InvalidArgumentException('The scheduled delivery belongs to a different member.');
+                }
+
+                if (in_array($schedule->status, ['received', 'cancelled'], true)) {
+                    throw new InvalidArgumentException('The scheduled delivery was already received or cancelled.');
+                }
+            }
 
             $gross = (float) $data['gross_weight_kg'];
             $moisture = (float) ($data['moisture_pct'] ?? 0);
@@ -121,7 +146,7 @@ class ReceivingService
                 action: 'Record Delivery',
                 reason: 'New delivery recorded',
                 before: null,
-                after: number_format($calc['net_weight_kg'], 2) . ' kg net',
+                after: number_format($calc['net_weight_kg'], 2).' kg net',
                 userId: $user->user_id,
                 terminalId: $terminalId,
             );
@@ -145,7 +170,26 @@ class ReceivingService
                 throw new InvalidArgumentException('Receipt must exist and be in completed status.');
             }
 
+            if ((int) $locked->branch_id !== (int) $user->branch_id) {
+                throw new InvalidArgumentException('This receipt belongs to a different branch.');
+            }
+
+            $location = StorageLocation::whereKey($location->location_id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if (! $location->is_active || (int) $location->branch_id !== (int) $locked->branch_id) {
+                throw new InvalidArgumentException('Choose an active storage location in the receipt branch.');
+            }
+
             $net = (string) $locked->net_weight_kg;
+            $storedAtLocation = (string) StockItem::where('location_id', $location->location_id)
+                ->sum('quantity_kg');
+
+            if ($location->capacity_kg !== null
+                && bccomp(bcadd($storedAtLocation, $net, 2), (string) $location->capacity_kg, 2) > 0) {
+                throw new InvalidArgumentException('This delivery exceeds the storage location capacity.');
+            }
 
             $stock = StockItem::where('variety_id', $locked->variety_id)
                 ->where('location_id', $location->location_id)
@@ -169,7 +213,7 @@ class ReceivingService
                 'movement_type' => 'receipt_in',
                 'quantity_kg' => $net,
                 'receipt_id' => $locked->receipt_id,
-                'reason' => 'Storage approved for ' . $locked->receipt_code,
+                'reason' => 'Storage approved for '.$locked->receipt_code,
                 'created_by' => $user->user_id,
             ]);
 
@@ -199,9 +243,9 @@ class ReceivingService
 
     private function nextReceiptCode(): string
     {
-        $last = DeliveryReceipt::orderByDesc('receipt_id')->value('receipt_code');
+        $last = DeliveryReceipt::orderByDesc('receipt_id')->lockForUpdate()->value('receipt_code');
         $next = $last ? ((int) substr($last, 3)) + 1 : 1001;
 
-        return 'RC-' . $next;
+        return 'RC-'.$next;
     }
 }

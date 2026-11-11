@@ -17,26 +17,32 @@ class LoginController extends Controller
 {
     public function show(): View
     {
-        return view('auth.login', [
+        return view('auth.signin', [
             'roles' => Role::orderBy('role_id')->get(),
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'role' => ['required', 'string'],
-            'employee_code' => ['required', 'string', 'max:20'],
-            'password' => ['required', 'string'],
-        ], [
-            'employee_code.required' => 'Employee ID and password are required. Sign-in is blocked.',
-            'password.required' => 'Employee ID and password are required. Sign-in is blocked.',
-            'role.required' => 'Select your cooperative role.',
-        ]);
+        try {
+            $data = $request->validate([
+                'role' => ['required', 'string'],
+                'employee_code' => ['required', 'string', 'max:20'],
+                'password' => ['required', 'string'],
+                'guidelines_acknowledged' => ['accepted'],
+            ], [
+                'employee_code.required' => 'Employee ID and password are required. Sign-in is blocked.',
+                'password.required' => 'Employee ID and password are required. Sign-in is blocked.',
+                'role.required' => 'Select your cooperative role.',
+                'guidelines_acknowledged.accepted' => 'Acknowledge the system security guidelines to sign in.',
+            ]);
+        } catch (ValidationException $exception) {
+            $this->recordAttempt($request, success: false);
+
+            throw $exception;
+        }
 
         $employeeCode = strtoupper(trim($data['employee_code']));
-        $role = Role::where('role_code', $data['role'])->first();
-        $terminal = Terminal::where('is_active', true)->first();
 
         $success = Auth::attempt([
             'employee_code' => $employeeCode,
@@ -44,20 +50,15 @@ class LoginController extends Controller
             'is_active' => true,
         ]);
 
-        if ($success && Auth::user()->role->role_code !== $data['role']) {
+        if ($success && (
+            Auth::user()->role->role_code !== $data['role']
+            || ! Auth::user()->branch->is_active
+        )) {
             Auth::logout();
             $success = false;
         }
 
-        LoginEvent::create([
-            'user_id' => User::where('employee_code', $employeeCode)->value('user_id'),
-            'employee_code_entered' => $employeeCode,
-            'selected_role_id' => $role?->role_id,
-            'terminal_id' => $terminal?->terminal_id,
-            'guidelines_acknowledged' => true,
-            'success' => $success,
-            'ip_address' => $request->ip(),
-        ]);
+        $this->recordAttempt($request, $employeeCode, $success);
 
         if (! $success) {
             throw ValidationException::withMessages([
@@ -80,5 +81,27 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
+    }
+
+    private function recordAttempt(Request $request, ?string $employeeCode = null, bool $success = false): void
+    {
+        $rawEmployeeCode = $request->input('employee_code');
+        $rawRoleCode = $request->input('role');
+        $employeeCode ??= strtoupper(substr(trim(is_string($rawEmployeeCode) ? $rawEmployeeCode : ''), 0, 20));
+        $roleCode = is_string($rawRoleCode) ? substr($rawRoleCode, 0, 30) : '';
+        $candidate = User::where('employee_code', $employeeCode)->first();
+        $terminalId = $candidate
+            ? Terminal::where('branch_id', $candidate->branch_id)->where('is_active', true)->value('terminal_id')
+            : null;
+
+        LoginEvent::create([
+            'user_id' => $candidate?->user_id,
+            'employee_code_entered' => $employeeCode,
+            'selected_role_id' => Role::where('role_code', $roleCode)->value('role_id'),
+            'terminal_id' => $terminalId,
+            'guidelines_acknowledged' => $request->boolean('guidelines_acknowledged'),
+            'success' => $success,
+            'ip_address' => $request->ip(),
+        ]);
     }
 }

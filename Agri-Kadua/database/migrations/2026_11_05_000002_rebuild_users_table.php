@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('job_title', 80)->nullable();
             $table->string('email', 150)->nullable()->unique();
             $table->string('phone', 30)->nullable();
-            $table->string('password');
+            $table->string('password_hash');
             $table->unsignedInteger('role_id');
             $table->unsignedInteger('branch_id');
             $table->boolean('is_active')->default(true);

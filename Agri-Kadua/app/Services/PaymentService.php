@@ -27,14 +27,19 @@ class PaymentService
             throw new InvalidArgumentException('Net weight must be positive and rate and deductions cannot be negative.');
         }
 
-        $gross = round($netKg * $ratePerKg, 2);
-        $final = round($gross - $inputAdvance - $serviceFee - $otherDeductions, 2);
+        $money = static fn (float $value): string => number_format($value, 4, '.', '');
 
-        if ($final < 0) {
+        // Decimal-string math so cents never drift; half-up rounding to 2 places.
+        $gross = bcadd(bcmul($money($netKg), $money($ratePerKg), 6), '0.005', 2);
+        $deductions = bcadd(bcadd($money($inputAdvance), $money($serviceFee), 4), $money($otherDeductions), 4);
+        $exact = bcsub($gross, $deductions, 4);
+        $final = bcadd($exact, '0.005', 2);
+
+        if (bccomp($exact, '0', 4) < 0) {
             throw new InvalidArgumentException('Deductions cannot exceed the harvest value.');
         }
 
-        return ['gross_value' => $gross, 'final_amount' => $final];
+        return ['gross_value' => (float) $gross, 'final_amount' => (float) $final];
     }
 
     /**
@@ -158,7 +163,7 @@ class PaymentService
 
     private function nextPaymentCode(): string
     {
-        $last = Payment::orderByDesc('payment_id')->value('payment_code');
+        $last = Payment::orderByDesc('payment_id')->lockForUpdate()->value('payment_code');
         $next = $last ? ((int) substr($last, 4)) + 1 : 882110;
 
         return 'REC-' . $next;
