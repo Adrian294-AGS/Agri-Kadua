@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RateController;
@@ -55,6 +56,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:cooperative_manager')->group(function () {
+        Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+        Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
         Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
         Route::get('/rates', [RateController::class, 'index'])->name('rates.index');
     });

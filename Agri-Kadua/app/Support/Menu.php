@@ -17,9 +17,10 @@ class Menu
         'overview' => ['Overview', 'dashboard', 'dashboard'],
         'receive' => ['Receive harvest', 'receive.create', 'receive.*'],
         'stock' => ['Stock', 'stock.index', 'stock.*'],
-        'pay' => ['Pay farmers', 'pay.index', 'pay.*'],
+        'pay' => ['Pay farmers', 'payments.index', 'payments.*'],
         'receipts' => ['Receipts', 'receipts.index', 'receipts.*'],
         'farmers' => ['Farmers', 'farmers.index', 'farmers.*'],
+        'employees' => ['Employees', 'employees.index', 'employees.*'],
         'audit' => ['Change history', 'audit.index', 'audit.*'],
         'rates' => ['Crop rates', 'rates.index', 'rates.*'],
     ];
@@ -28,7 +29,7 @@ class Menu
         Role::WAREHOUSE_ASSISTANT => ['home', 'receive', 'stock', 'farmers'],
         Role::FIELD_COORDINATOR => ['home', 'farmers'],
         Role::ACCOUNTING_CLERK => ['home', 'pay', 'receipts', 'farmers'],
-        Role::COOPERATIVE_MANAGER => ['overview', 'audit', 'stock', 'farmers', 'rates'],
+        Role::COOPERATIVE_MANAGER => ['overview', 'employees', 'audit', 'stock', 'farmers', 'rates'],
     ];
 
     /**

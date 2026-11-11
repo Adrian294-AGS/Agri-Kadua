@@ -28,6 +28,8 @@ The application uses MySQL for normal development and deployment. Install PHP 8.
 
 The demo accounts use the password `coopsync123`; replace these accounts and passwords before deploying. Authentication stores and verifies password hashes in the MySQL `users.password_hash` column.
 
+Cooperative Managers can create employee accounts from the **Employees** page. Accounts are assigned to the manager's branch and can be given Warehouse Assistant, Field Coordinator, or Accounting Clerk access. Initial passwords must be at least 12 characters; manager accounts must be provisioned by an existing administrator.
+
 Run the test suite with `php artisan test`. Tests use the SQLite connection and require the `pdo_sqlite` extension.
 
 ## About Laravel

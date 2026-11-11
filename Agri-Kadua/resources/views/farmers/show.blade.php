@@ -19,13 +19,7 @@
       <dt>Soil</dt><dd>{{ $member->soil_classification ?? '—' }}</dd>
       <dt>Main crop</dt><dd>{{ $member->crop?->crop_name ?? '—' }}@if ($member->variety) · {{ $member->variety->variety_name }}@endif</dd>
       <dt>Expected yield</dt>
-      <dd>
-        @if ($member->expected_yield_kg)
-          {{ number_format((float) $member->expected_yield_kg) }} kg@if ($member->expected_yield_season) ({{ $member->expected_yield_season }})@endif
-        @else
-          —
-        @endif
-      </dd>
+      <dd>{{ $member->expected_yield_kg !== null ? number_format((float) $member->expected_yield_kg) . ' kg' . ($member->expected_yield_season ? ' (' . $member->expected_yield_season . ')' : '') : '—' }}</dd>
       <dt>Coordinator</dt><dd>{{ $member->coordinator?->full_name ?? '—' }}</dd>
       <dt>Registered</dt><dd>{{ $member->registered_on->format('M j, Y') }}</dd>
     </dl>
