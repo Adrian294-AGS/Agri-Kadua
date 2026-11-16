@@ -34,6 +34,13 @@ class StockController extends Controller
             'stock_id' => ['required', 'integer', 'exists:stock_items,stock_id'],
             'quantity_kg' => ['required', 'numeric', 'decimal:0,2', 'gt:0', 'max:999999999999.99'],
             'reason' => ['required', 'string', 'max:255'],
+        ], [
+            'stock_id.required' => 'Choose the stock item to release.',
+            'stock_id.exists' => 'That stock item is no longer available.',
+            'quantity_kg.required' => 'Enter the quantity to release.',
+            'quantity_kg.numeric' => 'Quantity must be a number in kilograms.',
+            'quantity_kg.gt' => 'Quantity must be greater than zero.',
+            'reason.required' => 'Enter a reason for releasing the stock.',
         ]);
 
         $terminalId = Terminal::where('branch_id', $request->user()->branch_id)

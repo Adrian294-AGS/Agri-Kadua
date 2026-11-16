@@ -8,6 +8,17 @@
 
   <p><a href="{{ route('farmers.index') }}">&larr; All farmers</a></p>
   <h2>{{ $member->full_name }}</h2>
+  <div class="row action-row">
+    @if (auth()->user()->hasRole('field_coordinator', 'cooperative_manager'))
+      <a class="btn sm" href="{{ route('farmers.edit', $member) }}">Edit farmer</a>
+    @endif
+    @if (auth()->user()->hasRole('cooperative_manager') && $member->status === 'active')
+      <form method="POST" action="{{ route('farmers.deactivate', $member) }}" class="inline">
+        @csrf
+        <button class="btn sm danger" type="submit">Deactivate farmer</button>
+      </form>
+    @endif
+  </div>
 
   <div class="card">
     <dl class="kv">

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Co-opSync - San Miguel Farmers Cooperative</title>
-  <link rel="stylesheet" href="{{ asset('css/coopsync-prototype.css') }}">
+  <title>Agri-Kadua - San Miguel Farmers Cooperative</title>
+  <link rel="stylesheet" href="{{ asset('css/coopsync.css') }}">
   <script src="{{ asset('js/coopsync-prototype.js') }}" defer></script>
 </head>
 <body>
@@ -12,7 +12,7 @@
 
   <div id="app" hidden>
     <aside class="side">
-      <div class="brand">🌿 <b>Co-opSync</b><small>San Miguel Farmers Coop</small></div>
+      <div class="brand"><span class="brand-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span><div><b>Agri-Kadua</b><small>San Miguel Farmers Coop</small></div></div>
       <div class="usercard"><span id="uIcon"></span><div><b id="uName"></b><small id="uRole"></small></div></div>
       <nav id="nav"></nav>
     </aside>
@@ -34,7 +34,7 @@
         @include('coopsync.farmers')
         @include('coopsync.audit')
       </main>
-      <footer class="foot"><span>🌿 Co-opSync · San Miguel Farmers Cooperative</span>
+      <footer class="foot"><span><span class="footer-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span> Agri-Kadua · San Miguel Farmers Cooperative</span>
         <button class="link" id="btnReset" type="button">Reset demo data</button></footer>
     </div>
   </div>

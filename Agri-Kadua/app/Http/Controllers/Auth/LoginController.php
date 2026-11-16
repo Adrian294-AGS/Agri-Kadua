@@ -62,7 +62,7 @@ class LoginController extends Controller
 
         if (! $success) {
             throw ValidationException::withMessages([
-                'employee_code' => 'Invalid Employee ID, password, or role. Please check your details and try again.',
+                'employee_code' => 'We could not sign you in. Check your Employee ID, password, and selected role, then try again.',
             ]);
         }
 

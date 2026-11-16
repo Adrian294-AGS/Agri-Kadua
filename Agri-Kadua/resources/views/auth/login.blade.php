@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign in · Co-opSync</title>
+    <title>Sign in · Agri-Kadua</title>
     <link rel="stylesheet" href="{{ asset('css/coopsync.css') }}">
 </head>
 <body class="login-body">
@@ -11,8 +11,8 @@
     <section class="login-brand">
         <div class="login-brand-inner">
             <div class="brand brand-light">
-                <span class="brand-mark">C</span>
-                <div class="brand-name">Co-opSync</div>
+                <span class="brand-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span>
+                <div class="brand-name">Agri-Kadua</div>
             </div>
             <h2>San Miguel Farmers Cooperative</h2>
             <p>Real-time cooperative operations. A live internet connection is required; no offline mode.</p>

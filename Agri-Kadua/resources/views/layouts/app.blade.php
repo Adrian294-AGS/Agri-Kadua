@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard') · Co-opSync</title>
+    <title>@yield('title', 'Dashboard') · Agri-Kadua</title>
     <link rel="stylesheet" href="{{ asset('css/coopsync.css') }}">
 </head>
 <body class="app-body">
@@ -16,16 +16,16 @@
 <div class="app-shell">
     <aside class="sidebar">
         <div class="brand">
-            <span class="brand-mark">C</span>
+            <span class="brand-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span>
             <div>
-                <div class="brand-name">Co-opSync</div>
+                <div class="brand-name">Agri-Kadua</div>
                 <div class="brand-sub">{{ $currentUser->branch->branch_name }}</div>
             </div>
         </div>
 
         <nav class="nav">
             @foreach ($navItems as $item)
-                <a href="{{ $item['url'] }}" class="nav-link {{ request()->routeIs($item['route']) ? 'is-active' : '' }}">{{ $item['label'] }}</a>
+                <a href="{{ $item['url'] }}" class="nav-link {{ request()->routeIs($item['route']) ? 'is-active' : '' }}"><span class="nav-icon">{!! \App\Support\Menu::navIcon($item['route']) !!}</span>{{ $item['label'] }}</a>
             @endforeach
         </nav>
 

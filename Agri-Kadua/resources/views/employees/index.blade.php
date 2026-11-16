@@ -10,6 +10,9 @@
   @if ($errors->any())
     <p class="msg er">{{ $errors->first() }}</p>
   @endif
+  @if (session('status'))
+    <p class="msg">{{ session('status') }}</p>
+  @endif
 
   <form class="card" method="POST" action="{{ route('employees.store') }}">
     @csrf
@@ -60,6 +63,14 @@
           {{ $employee->is_active ? $employee->role->role_name : 'Inactive' }}
         </span>
       </div>
+      @if ($employee->user_id !== auth()->id())
+        <form method="POST" action="{{ route('employees.toggle-active', $employee) }}">
+          @csrf
+          <button class="btn sm {{ $employee->is_active ? 'danger' : 'o' }}" type="submit">
+            {{ $employee->is_active ? 'Deactivate' : 'Reactivate' }}
+          </button>
+        </form>
+      @endif
     </div>
   @empty
     <p class="sub">No employee accounts found.</p>

@@ -28,6 +28,7 @@ class EmployeeController extends Controller
                 Role::WAREHOUSE_ASSISTANT,
                 Role::FIELD_COORDINATOR,
                 Role::ACCOUNTING_CLERK,
+                Role::COOPERATIVE_MANAGER,
             ])
             ->orderBy('role_name')
             ->get();
@@ -68,9 +69,21 @@ class EmployeeController extends Controller
                     Role::WAREHOUSE_ASSISTANT,
                     Role::FIELD_COORDINATOR,
                     Role::ACCOUNTING_CLERK,
+                    Role::COOPERATIVE_MANAGER,
                 ]),
             ],
             'password' => ['required', 'string', 'min:12', 'max:128', 'confirmed'],
+        ], [
+            'employee_code.required' => 'Enter an employee ID.',
+            'employee_code.regex' => 'The employee ID may contain only letters, numbers, and hyphens.',
+            'employee_code.unique' => 'That employee ID is already in use. Enter a different ID.',
+            'full_name.required' => 'Enter the employee’s full name.',
+            'email.email' => 'Enter a valid email address, or leave this field blank.',
+            'role_id.required' => 'Choose the employee’s role.',
+            'role_id.exists' => 'Choose a valid employee role.',
+            'password.required' => 'Enter an initial password.',
+            'password.min' => 'The initial password must be at least 12 characters.',
+            'password.confirmed' => 'The password confirmation does not match.',
         ]);
 
         $employee = DB::transaction(function () use ($data, $request) {
@@ -101,5 +114,17 @@ class EmployeeController extends Controller
         return redirect()
             ->route('employees.index')
             ->with('status', 'Account created for '.$employee->full_name.'. Share the Employee ID and initial password with them securely.');
+    }
+
+    public function toggleActive(Request $request, User $employee): RedirectResponse
+    {
+        abort_unless((int) $employee->branch_id === (int) $request->user()->branch_id, 404);
+        abort_if((int) $employee->user_id === (int) $request->user()->user_id, 422, 'You cannot deactivate your own account.');
+
+        $employee->update(['is_active' => ! $employee->is_active]);
+        $action = $employee->is_active ? 'Reactivate Employee Account' : 'Deactivate Employee Account';
+        AuditLog::record('user_access', $employee->employee_code, $action, 'Employee account status changed', null, $employee->is_active ? 'active' : 'inactive', $request->user()->user_id);
+
+        return redirect()->route('employees.index')->with('status', $employee->is_active ? 'Employee account reactivated.' : 'Employee account deactivated.');
     }
 }

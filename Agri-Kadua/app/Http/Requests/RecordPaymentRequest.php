@@ -34,4 +34,15 @@ class RecordPaymentRequest extends FormRequest
             'reason' => ['nullable', 'string', 'max:255'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'channel_id.required_if' => 'Choose a payment channel when marking the payment as paid.',
+            'channel_id.exists' => 'Choose an active payment channel.',
+            'bank_reference.required_if' => 'Enter the bank reference when marking the payment as paid.',
+            'status.in' => 'Choose either Ready to pay or Paid.',
+            'paid_at.before_or_equal' => 'Payment date cannot be in the future.',
+        ];
+    }
 }

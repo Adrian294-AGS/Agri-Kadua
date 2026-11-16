@@ -1,6 +1,6 @@
 <section id="login">
   <div class="card login">
-    <h1>🌿 Co-opSync</h1>
+    <h1><span class="brand-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span> Agri-Kadua</h1>
     <p class="sub">Sign in to San Miguel Farmers Cooperative</p>
     <label>Choose your role</label>
     <div class="roles" id="roleBtns"></div>
