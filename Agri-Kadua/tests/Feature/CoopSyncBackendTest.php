@@ -502,7 +502,7 @@ class CoopSyncBackendTest extends TestCase
         $this->assertDatabaseMissing('users', ['employee_code' => 'WA-0100']);
     }
 
-    public function test_employee_account_cannot_be_created_with_a_duplicate_id_or_manager_role(): void
+    public function test_employee_account_cannot_use_a_duplicate_id_and_can_create_any_role(): void
     {
         $manager = User::where('employee_code', 'CM-0001')->firstOrFail();
         $managerRole = Role::where('role_code', Role::COOPERATIVE_MANAGER)->firstOrFail();
@@ -524,8 +524,12 @@ class CoopSyncBackendTest extends TestCase
             'role_id' => $managerRole->role_id,
             'password' => 'Strong-Initial-Pass-2026',
             'password_confirmation' => 'Strong-Initial-Pass-2026',
-        ])->assertSessionHasErrors('role_id');
+        ])->assertRedirect(route('employees.index'));
 
-        $this->assertDatabaseMissing('users', ['employee_code' => 'CM-0100']);
+        $this->assertDatabaseHas('users', [
+            'employee_code' => 'CM-0100',
+            'role_id' => $managerRole->role_id,
+            'is_active' => true,
+        ]);
     }
 }

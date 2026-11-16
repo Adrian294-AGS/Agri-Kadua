@@ -5,6 +5,9 @@
 
 @section('content')
   <h2>Farmers</h2>
+  @if (auth()->user()->hasRole('field_coordinator', 'cooperative_manager'))
+    <p><a class="btn btn-primary sm" href="{{ route('farmers.create') }}">Add farmer</a></p>
+  @endif
 
   <form method="GET" action="{{ route('farmers.index') }}" class="filters">
     <input type="search" name="q" value="{{ $q }}" placeholder="Search name, ID or phone" aria-label="Search farmers">

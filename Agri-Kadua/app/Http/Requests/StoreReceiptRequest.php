@@ -30,4 +30,22 @@ class StoreReceiptRequest extends FormRequest
             'notes' => ['nullable', 'string', 'max:255'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'member_id.required' => 'Choose the farmer who delivered the harvest.',
+            'member_id.exists' => 'Choose a valid farmer from your branch.',
+            'variety_id.required' => 'Choose the crop variety being delivered.',
+            'variety_id.exists' => 'Choose a valid crop variety.',
+            'delivery_date.required' => 'Enter the delivery date.',
+            'delivery_date.before_or_equal' => 'The delivery date cannot be in the future.',
+            'gross_weight_kg.required' => 'Enter the gross harvest weight in kilograms.',
+            'gross_weight_kg.gt' => 'Gross weight must be greater than zero.',
+            'moisture_pct.between' => 'Moisture must be between 0 and 100 percent.',
+            'impurities_pct.between' => 'Impurities must be between 0 and 100 percent.',
+            'deduction_pct.between' => 'Deduction must be between 0 and 100 percent.',
+            'rejected_kg.min' => 'Rejected quantity cannot be negative.',
+        ];
+    }
 }

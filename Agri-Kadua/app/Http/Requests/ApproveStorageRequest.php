@@ -21,4 +21,12 @@ class ApproveStorageRequest extends FormRequest
             'location_id' => ['required', 'integer', 'exists:storage_locations,location_id'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'location_id.required' => 'Choose the storage location for this receipt.',
+            'location_id.exists' => 'Choose a valid storage location.',
+        ];
+    }
 }

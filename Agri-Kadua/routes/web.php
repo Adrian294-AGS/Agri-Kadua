@@ -27,7 +27,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/farmers', [FarmerController::class, 'index'])->name('farmers.index');
+    Route::middleware('role:field_coordinator,cooperative_manager')->group(function () {
+        Route::get('/farmers/create', [FarmerController::class, 'create'])->name('farmers.create');
+        Route::post('/farmers', [FarmerController::class, 'store'])->name('farmers.store');
+        Route::get('/farmers/{member}/edit', [FarmerController::class, 'edit'])->name('farmers.edit');
+        Route::put('/farmers/{member}', [FarmerController::class, 'update'])->name('farmers.update');
+    });
     Route::get('/farmers/{member}', [FarmerController::class, 'show'])->name('farmers.show');
+    Route::post('/farmers/{member}/deactivate', [FarmerController::class, 'deactivate'])->middleware('role:cooperative_manager')->name('farmers.deactivate');
 
     Route::middleware('role:warehouse_assistant,accounting_clerk,cooperative_manager')->group(function () {
         Route::get('/receipts', [ReceivingController::class, 'index'])->name('receipts.index');
@@ -58,6 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:cooperative_manager')->group(function () {
         Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
         Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+        Route::post('/employees/{employee}/toggle-active', [EmployeeController::class, 'toggleActive'])->name('employees.toggle-active');
         Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
         Route::get('/rates', [RateController::class, 'index'])->name('rates.index');
     });

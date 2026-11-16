@@ -3,14 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sign in · Co-opSync</title>
-  <link rel="stylesheet" href="{{ asset('css/coopsync-app.css') }}">
+  <title>Sign in · Agri-Kadua</title>
+  <link rel="stylesheet" href="{{ asset('css/coopsync.css') }}">
+  <script src="{{ asset('js/coopsync.js') }}" defer></script>
 </head>
-<body>
+<body class="login-page">
+<div class="page-loader" aria-hidden="true">
+  <div class="login-splash">
+    <span class="splash-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span>
+    <strong>Agri-Kadua</strong>
+    <small>San Miguel Farmers Cooperative</small>
+  </div>
+</div>
 <section id="login">
-  <form class="card login" method="POST" action="{{ route('login.store') }}">
+  <form class="card login page-enter" method="POST" action="{{ route('login.store') }}">
     @csrf
-    <h1>🌿 Co-opSync</h1>
+    <h1><span class="brand-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span> Agri-Kadua</h1>
     <p class="sub">Sign in to San Miguel Farmers Cooperative</p>
 
     <label>Choose your role</label>
@@ -18,7 +26,7 @@
       @foreach ($roles as $role)
         <label>
           <input type="radio" name="role" value="{{ $role->role_code }}" @checked(old('role') === $role->role_code) required>
-          <div><span>{{ \App\Support\Menu::icon($role->role_code) }}</span>{{ $role->role_name }}</div>
+          <div><span>{!! \App\Support\Menu::icon($role->role_code) !!}</span>{{ $role->role_name }}</div>
         </label>
       @endforeach
     </div>
@@ -35,7 +43,10 @@
     </label>
 
     @if ($errors->any())
-      <p class="msg er">{{ $errors->first() }}</p>
+      <div class="msg er" role="alert">
+        <strong>Sign-in unsuccessful</strong>
+        <span>{{ $errors->first() }}</span>
+      </div>
     @endif
 
     <button class="btn" type="submit">Sign in</button>
