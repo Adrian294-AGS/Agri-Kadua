@@ -26,6 +26,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->middleware('throttle:120,1')->name('notifications.index');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'read'])->name('notifications.read');
     Route::get('/farmers', [FarmerController::class, 'index'])->name('farmers.index');
     Route::middleware('role:field_coordinator,cooperative_manager')->group(function () {
         Route::get('/farmers/create', [FarmerController::class, 'create'])->name('farmers.create');

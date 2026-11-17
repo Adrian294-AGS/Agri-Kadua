@@ -61,6 +61,7 @@
     <header class="top">
       <span>@yield('heading', 'Home')</span>
       <div>
+        @include('partials.notification-bell')
         <span id="live-status" class="pill pill-online">&#9679; Online</span>
         <form method="POST" action="{{ route('logout') }}" class="inline">
           @csrf
