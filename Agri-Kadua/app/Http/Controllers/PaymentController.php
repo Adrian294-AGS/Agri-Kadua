@@ -74,6 +74,7 @@ class PaymentController extends Controller
 
         try {
             $payment = $this->payments->record($receipt, $request->validated(), $user, $terminalId);
+            app(\App\Services\NotificationService::class)->paymentRecorded($payment, $user);
         } catch (InvalidArgumentException $e) {
             throw ValidationException::withMessages(['payment' => $e->getMessage()]);
         }

@@ -97,6 +97,7 @@ class ReceivingController extends Controller
 
         try {
             $receipt = $this->receiving->record($request->validated(), $user, $this->terminalId($request));
+            app(\App\Services\NotificationService::class)->deliveryRecorded($receipt, $user);
         } catch (InvalidArgumentException $e) {
             throw ValidationException::withMessages(['receipt' => $e->getMessage()]);
         }
@@ -127,6 +128,7 @@ class ReceivingController extends Controller
 
         try {
             $stored = $this->receiving->approveStorage($receipt, $location, $user, $this->terminalId($request));
+            app(\App\Services\NotificationService::class)->receiptStored($stored, $user);
         } catch (InvalidArgumentException $e) {
             throw ValidationException::withMessages(['receipt' => $e->getMessage()]);
         }

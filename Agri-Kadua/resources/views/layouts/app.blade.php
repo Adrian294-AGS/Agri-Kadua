@@ -42,6 +42,7 @@
                 <p class="page-sub">@yield('subheading')</p>
             </div>
             <div class="topbar-right">
+                @include('partials.notification-bell')
                 <span id="live-status" class="pill pill-online">&#9679; Live &middot; Online</span>
                 <div class="user-chip">
                     <span class="avatar">{{ $initials }}</span>

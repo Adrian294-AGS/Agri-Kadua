@@ -49,6 +49,7 @@ class StockController extends Controller
 
         try {
             $release = $this->stock->release($data, $request->user(), $terminalId);
+            app(\App\Services\NotificationService::class)->stockReleased($release, $request->user(), (int) $data['stock_id']);
         } catch (InvalidArgumentException $exception) {
             throw ValidationException::withMessages(['quantity_kg' => $exception->getMessage()]);
         }
