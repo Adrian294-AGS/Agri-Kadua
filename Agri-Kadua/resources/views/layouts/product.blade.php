@@ -6,6 +6,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('title', 'Home') · Agri-Kadua</title>
   <link rel="stylesheet" href="{{ asset('css/coopsync.css') }}">
+  @stack('styles')
   <script src="{{ asset('js/coopsync.js') }}" defer></script>
 </head>
 <body>
@@ -46,7 +47,7 @@
 @endphp
 <div id="app" class="page-enter">
   <aside class="side">
-    <div class="brand"><span class="brand-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span><div><b>Agri-Kadua</b><small>{{ $currentUser->branch->branch_name }}</small></div></div>
+    <div class="brand"><img class="brand-logo" src="{{ asset('images/kadua-logo.png') }}" alt="Kadua logo"><div><b>Agri-Kadua</b><small>{{ $currentUser->branch->branch_name }}</small></div></div>
     <div class="usercard">
       <span>{!! \App\Support\Menu::icon($currentUser->role->role_code) !!}</span>
       <div><b>{{ $currentUser->full_name }}</b><small>{{ $currentUser->role->role_name }}</small></div>
@@ -75,7 +76,7 @@
       @endif
       @yield('content')
     </main>
-    <footer class="foot"><span><span class="footer-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span> Agri-Kadua · {{ $currentUser->branch->branch_name }}</span></footer>
+    <footer class="foot"><span><img class="footer-logo" src="{{ asset('images/kadua-logo.png') }}" alt=""> Agri-Kadua · {{ $currentUser->branch->branch_name }}</span></footer>
   </div>
 </div>
 </body>

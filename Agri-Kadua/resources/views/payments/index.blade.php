@@ -4,6 +4,10 @@
 @section('heading', 'Pay farmers')
 
 @section('content')
+  @if ($errors->any())
+    <p class="msg er" role="alert">{{ $errors->first() }}</p>
+  @endif
+
   <h2>Eligible harvests</h2>
   @forelse ($receipts as $receipt)
     <form class="card" method="POST" action="{{ route('payments.store', $receipt) }}">
@@ -60,6 +64,9 @@
         </div>
         <div class="amt">PHP {{ number_format((float) $payment->final_amount, 2) }}</div>
       </div>
+      @if ($payment->status === 'paid' && $payment->slip)
+        <a class="btn sm" href="{{ route('receipts.print', $payment->receipt) }}">Print receipt</a>
+      @endif
     </div>
   @empty
     <p class="sub">No payments recorded.</p>

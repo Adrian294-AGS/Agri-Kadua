@@ -16,7 +16,7 @@
 <div class="app-shell">
     <aside class="sidebar">
         <div class="brand">
-            <span class="brand-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span>
+            <img class="brand-logo" src="{{ asset('images/kadua-logo.png') }}" alt="Kadua logo">
             <div>
                 <div class="brand-name">Agri-Kadua</div>
                 <div class="brand-sub">{{ $currentUser->branch->branch_name }}</div>

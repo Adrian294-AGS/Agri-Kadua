@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:warehouse_assistant,accounting_clerk,cooperative_manager')->group(function () {
         Route::get('/receipts', [ReceivingController::class, 'index'])->name('receipts.index');
+        Route::get('/receipts/{receipt}/print', [ReceivingController::class, 'print'])->name('receipts.print');
     });
 
     Route::middleware('role:warehouse_assistant')->group(function () {

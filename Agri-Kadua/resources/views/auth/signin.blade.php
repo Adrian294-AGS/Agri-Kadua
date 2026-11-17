@@ -10,7 +10,7 @@
 <body class="login-page">
 <div class="page-loader" aria-hidden="true">
   <div class="login-splash">
-    <span class="splash-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span>
+    <img class="splash-logo" src="{{ asset('images/kadua-logo.png') }}" alt="Kadua logo">
     <strong>Agri-Kadua</strong>
     <small>San Miguel Farmers Cooperative</small>
   </div>
@@ -18,7 +18,7 @@
 <section id="login">
   <form class="card login page-enter" method="POST" action="{{ route('login.store') }}">
     @csrf
-    <h1><span class="brand-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span> Agri-Kadua</h1>
+    <h1><img class="brand-logo" src="{{ asset('images/kadua-logo.png') }}" alt="Kadua logo"> Agri-Kadua</h1>
     <p class="sub">Sign in to San Miguel Farmers Cooperative</p>
 
     <label>Choose your role</label>

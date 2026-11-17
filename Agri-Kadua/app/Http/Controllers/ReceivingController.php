@@ -53,7 +53,8 @@ class ReceivingController extends Controller
             ->with([
                 'member:member_id,member_code,full_name',
                 'variety:variety_id,variety_name',
-                'payment:payment_id,receipt_id,status,final_amount',
+                'payment:payment_id,receipt_id,status,payment_code,net_weight_kg,base_rate_per_kg,input_advance,service_fee,standard_deductions,final_amount,channel_id,bank_reference,paid_at',
+                'payment.slip',
             ])
             ->where('branch_id', $request->user()->branch_id)
             ->when(in_array($status, self::STATUSES, true), fn ($query) => $query->where('status', $status))
@@ -74,6 +75,20 @@ class ReceivingController extends Controller
                 ->orderBy('location_name')
                 ->get(),
         ]);
+    }
+
+    public function print(Request $request, DeliveryReceipt $receipt): View
+    {
+        abort_unless((int) $receipt->branch_id === (int) $request->user()->branch_id, 404);
+
+        $receipt->load(['member', 'variety.crop', 'payment.channel', 'payment.slip.issuer']);
+
+        abort_unless($receipt->payment?->status === 'paid' && $receipt->payment->slip, 404);
+
+        $receipt->payment->slip->increment('print_count');
+        $receipt->payment->slip->update(['last_printed_at' => now()]);
+
+        return view('receipts.print', ['receipt' => $receipt]);
     }
 
     public function store(StoreReceiptRequest $request): JsonResponse|RedirectResponse
