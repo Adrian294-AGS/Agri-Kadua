@@ -69,4 +69,27 @@ class DeliveryReceipt extends Model
     {
         return $this->hasOne(ReceiptSlip::class, 'receipt_id', 'receipt_id');
     }
+
+    public function workflowStatusLabel(): string
+    {
+        $payment = $this->relationLoaded('payment') ? $this->payment : null;
+
+        if ($this->status === self::STATUS_VOIDED) {
+            return 'Voided';
+        }
+
+        if ($this->status === self::STATUS_STORED && $payment?->status === 'paid') {
+            return 'Paid & Stored';
+        }
+
+        if ($this->status === self::STATUS_STORED) {
+            return 'Stored - Awaiting Payment';
+        }
+
+        if ($payment) {
+            return 'Payment Processing';
+        }
+
+        return 'Received';
+    }
 }

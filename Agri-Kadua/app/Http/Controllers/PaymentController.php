@@ -31,6 +31,8 @@ class PaymentController extends Controller
                 'member:member_id,member_code,full_name',
                 'variety:variety_id,variety_name',
                 'channel:channel_id,channel_name',
+                'receipt:receipt_id,receipt_code',
+                'slip',
             ])
             ->whereHas('member', fn ($query) => $query->where('branch_id', $branchId))
             ->when(in_array($status, self::STATUSES, true), fn ($query) => $query->where('status', $status))

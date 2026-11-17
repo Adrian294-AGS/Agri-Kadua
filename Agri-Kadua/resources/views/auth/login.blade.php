@@ -11,7 +11,7 @@
     <section class="login-brand">
         <div class="login-brand-inner">
             <div class="brand brand-light">
-                <span class="brand-mark" aria-hidden="true">{!! \App\Support\Menu::navIcon('dashboard') !!}</span>
+                <img class="brand-logo" src="{{ asset('images/kadua-logo.png') }}" alt="Kadua logo">
                 <div class="brand-name">Agri-Kadua</div>
             </div>
             <h2>San Miguel Farmers Cooperative</h2>

@@ -28,10 +28,15 @@
           <b>{{ $receipt->receipt_code }} · {{ $receipt->member->full_name }}</b>
           <small>{{ $receipt->variety->variety_name }} · {{ $receipt->delivery_date->format('M j, Y') }} · {{ number_format((float) $receipt->net_weight_kg, 2) }} kg accepted</small>
         </div>
-        <span class="tag">{{ ucfirst($receipt->status) }}</span>
+        <span class="tag">{{ $receipt->workflowStatusLabel() }}</span>
       </div>
       @if ($receipt->payment)
         <small>Payment: {{ ucfirst(str_replace('_', ' ', $receipt->payment->status)) }} · PHP {{ number_format((float) $receipt->payment->final_amount, 2) }}</small>
+      @endif
+      @if ($receipt->payment?->status === 'paid' && $receipt->payment->slip)
+        <div class="receipt-actions">
+          <a class="btn sm" href="{{ route('receipts.print', $receipt) }}">Print receipt</a>
+        </div>
       @endif
       @if ($receipt->status === \App\Models\DeliveryReceipt::STATUS_COMPLETED && auth()->user()->hasRole(\App\Models\Role::WAREHOUSE_ASSISTANT))
         <form method="POST" action="{{ route('receipts.approve-storage', $receipt) }}" class="filters">
